@@ -30,6 +30,11 @@ public class LaboratorioController {
         return ResponseEntity.ok(laboratorio);
     }
 
+    @GetMapping("/lastquincena/{quincena}")
+    public String getLastQuincena(@PathVariable(value = "quincena") String quincena) {
+        return laboratorioService.getLastQuincena(quincena);
+    }
+
     @PostMapping()
     public ResponseEntity<Laboratorio> createLaboratorio(@RequestBody Laboratorio laboratorio) {
         Laboratorio newLaboratorio = laboratorioService.createLaboratorio(laboratorio);

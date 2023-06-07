@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import tingeso.laboratorioservice.entity.Laboratorio;
-import tingeso.laboratorioservice.model.Acopio;
 import tingeso.laboratorioservice.repository.LaboratorioRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

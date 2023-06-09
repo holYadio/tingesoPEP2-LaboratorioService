@@ -35,6 +35,16 @@ public class LaboratorioController {
         return laboratorioService.getLastQuincena(quincena);
     }
 
+    @GetMapping("/getVariacionGrasa/{quincena}/{codigoProveedor}/{porcentajeGrasa}")
+    public double getVariacionGrasa(@PathVariable(value = "quincena") String quincena, @PathVariable(value = "codigoProveedor") String codigoProveedor, @PathVariable(value = "porcentajeGrasa") String porcentajeGrasa) {
+        return laboratorioService.getVariacionGrasa(quincena, codigoProveedor, porcentajeGrasa);
+    }
+
+    @GetMapping("/getVariacionSolidosTotales/{quincena}/{codigoProveedor}/{porcentajeSolidoTOtal}")
+    public double getVariacionSolidoTotal(@PathVariable(value = "quincena") String quincena, @PathVariable(value = "codigoProveedor") String codigoProveedor, @PathVariable(value = "porcentajeSolidoTOtal") String porcentajeSolidoTOtal) {
+        return laboratorioService.getVariacionSolidoTotal(quincena, codigoProveedor, porcentajeSolidoTOtal);
+    }
+
     @PostMapping()
     public ResponseEntity<Laboratorio> createLaboratorio(@RequestBody Laboratorio laboratorio) {
         Laboratorio newLaboratorio = laboratorioService.createLaboratorio(laboratorio);

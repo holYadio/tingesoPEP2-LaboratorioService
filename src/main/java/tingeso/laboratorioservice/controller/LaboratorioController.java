@@ -3,9 +3,13 @@ package tingeso.laboratorioservice.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import tingeso.laboratorioservice.entity.Laboratorio;
 import tingeso.laboratorioservice.service.LaboratorioService;
 
+import java.io.FileNotFoundException;
+import java.text.ParseException;
 import java.util.List;
 
 @RestController
@@ -36,7 +40,9 @@ public class LaboratorioController {
     }
 
     @GetMapping("/getVariacionGrasa/{quincena}/{codigoProveedor}/{porcentajeGrasa}")
-    public double getVariacionGrasa(@PathVariable(value = "quincena") String quincena, @PathVariable(value = "codigoProveedor") String codigoProveedor, @PathVariable(value = "porcentajeGrasa") String porcentajeGrasa) {
+    public double getVariacionGrasa(@PathVariable(value = "quincena") String quincena,
+                                    @PathVariable(value = "codigoProveedor") String codigoProveedor,
+                                    @PathVariable(value = "porcentajeGrasa") String porcentajeGrasa) {
         return laboratorioService.getVariacionGrasa(quincena, codigoProveedor, porcentajeGrasa);
     }
 
@@ -45,11 +51,13 @@ public class LaboratorioController {
         return laboratorioService.getVariacionSolidoTotal(quincena, codigoProveedor, porcentajeSolidoTOtal);
     }
 
-    @PostMapping()
-    public ResponseEntity<Laboratorio> createLaboratorio(@RequestBody Laboratorio laboratorio) {
-        Laboratorio newLaboratorio = laboratorioService.createLaboratorio(laboratorio);
-        if (newLaboratorio == null)
-            return ResponseEntity.noContent().build();
-        return ResponseEntity.ok(newLaboratorio);
+    @PostMapping
+    public void createlaboratorio(@RequestParam("file") MultipartFile file,
+                                  @RequestParam("quincena") String quincena,
+                                  RedirectAttributes ms){
+        laboratorioService.guardar(file);
+        ms.addFlashAttribute("mensaje", "Se ha subido correctamente el archivo " + file.getOriginalFilename() + "!");
+        laboratorioService.leerArchivo(file.getOriginalFilename(), quincena);
     }
+
 }

@@ -1,5 +1,6 @@
 package tingeso.laboratorioservice.service;
 
+import com.ctc.wstx.evt.WstxEventReader;
 import lombok.Generated;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -174,4 +175,53 @@ public class LaboratorioService {
         return quincenaAnterior;
     }
 
+    public String guardar(MultipartFile file) {
+        String fileName = file.getOriginalFilename();
+        if (fileName != null){
+            if ((!file.isEmpty()) && (fileName.toUpperCase().equals("DATA.TXT"))){
+                try{
+                    byte [] bytes = file.getBytes();
+                    Path path = Paths.get(file.getOriginalFilename());
+                    Files.write(path, bytes);
+                    logg.info("Archivo de analisis del Laboratiorio guardado");
+                }
+                catch (IOException e){
+                    logg.error("Error", e);
+                }
+            }
+            return "Archivo de analisis del Laboratiorio guardado";
+        }else {
+            return "No se guardo el Archivo de analisis del Laboratiorio";
+        }
+    }
+
+    public void leerArchivo(String direccion, String quincena){
+        BufferedReader bf = null;
+        try{
+            bf = new BufferedReader(new FileReader(direccion));
+            StringBuilder temp = new StringBuilder();
+            String bfRead;
+            int count = 1;
+            while((bfRead = bf.readLine()) != null){
+                if (count == 1){
+                    count = 0;
+                }
+                else{
+                    guardarDatoDB(bfRead.split(";")[0], bfRead.split(";")[1], bfRead.split(";")[2],quincena);
+                    temp.append("\n").append(bfRead);
+                }
+            }
+            System.out.println("Archivo de analisis del Laboratiorio leido exitosamente");
+        }catch(Exception e){
+            System.err.println("No se encontro el archivo de analisis del Laboratiorio");
+        }finally{
+            if(bf != null){
+                try{
+                    bf.close();
+                }catch(IOException e){
+                    logg.error("ERROR", e);
+                }
+            }
+        }
+    }
 }

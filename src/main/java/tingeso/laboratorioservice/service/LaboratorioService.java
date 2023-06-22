@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -38,59 +39,6 @@ public class LaboratorioService {
 
     public Laboratorio getLaboratorioByProveedorYQuincena(String proveedor, String quincena) {
         return laboratorioRepository.findByProveedorAndQuincena(proveedor, quincena);
-    }
-
-    @Generated
-    public String guardarDatosLab(MultipartFile file){
-        String fileName = file.getOriginalFilename();
-        if (fileName != null){
-            if (!file.isEmpty()){
-                try{
-                    byte [] bytes = file.getBytes();
-                    Path path = Paths.get(file.getOriginalFilename());
-                    Files.write(path, bytes);
-                    logg.info("Archivo de analisis del Laboratiorio guardado");
-                }
-                catch (IOException e){
-                    logg.error("Error", e);
-                }
-            }
-            return "Archivo de analisis del Laboratiorio guardado";
-        }
-        else {
-            return "No se guardo el Archivo de analisis del Laboratiorio";
-        }
-    }
-
-    @Generated
-    public void leerCsv(String direccion, String quincena){
-        BufferedReader bf = null;
-        try{
-            bf = new BufferedReader(new FileReader(direccion));
-            StringBuilder temp = new StringBuilder();
-            String bfRead;
-            int count = 1;
-            while((bfRead = bf.readLine()) != null){
-                if (count == 1){
-                    count = 0;
-                }
-                else{
-                    guardarDatoDB(bfRead.split(";")[0], bfRead.split(";")[1], bfRead.split(";")[2],quincena);
-                    temp.append("\n").append(bfRead);
-                }
-            }
-            System.out.println("Archivo de analisis del Laboratiorio leido exitosamente");
-        }catch(Exception e){
-            System.err.println("No se encontro el archivo de analisis del Laboratiorio");
-        }finally{
-            if(bf != null){
-                try{
-                    bf.close();
-                }catch(IOException e){
-                    logg.error("ERROR", e);
-                }
-            }
-        }
     }
 
     public void guardarDatoDB(String proveedor, String porcentajeGrasa, String porcentajeSolidoTotal, String quincena){
@@ -178,7 +126,7 @@ public class LaboratorioService {
     public String guardar(MultipartFile file) {
         String fileName = file.getOriginalFilename();
         if (fileName != null){
-            if ((!file.isEmpty()) && (fileName.toUpperCase().equals("DATA.TXT"))){
+            if (!file.isEmpty()){
                 try{
                     byte [] bytes = file.getBytes();
                     Path path = Paths.get(file.getOriginalFilename());
@@ -222,6 +170,21 @@ public class LaboratorioService {
                     logg.error("ERROR", e);
                 }
             }
+        }
+    }
+
+    public void borrarArchivo(String nombreArchivo) {
+        File archivo = new File(nombreArchivo);
+
+        if (archivo.exists()) {
+            boolean resultado = archivo.delete();
+            if (resultado) {
+                System.out.println("Archivo borrado exitosamente.");
+            } else {
+                System.out.println("No se pudo borrar el archivo.");
+            }
+        } else {
+            System.out.println("El archivo no existe.");
         }
     }
 }

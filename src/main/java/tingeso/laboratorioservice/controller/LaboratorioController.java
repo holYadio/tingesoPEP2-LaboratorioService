@@ -39,15 +39,18 @@ public class LaboratorioController {
         return laboratorioService.getLastQuincena(quincena);
     }
 
-    @GetMapping("/getVariacionGrasa/{quincena}/{codigoProveedor}/{porcentajeGrasa}")
-    public double getVariacionGrasa(@PathVariable(value = "quincena") String quincena,
-                                    @PathVariable(value = "codigoProveedor") String codigoProveedor,
-                                    @PathVariable(value = "porcentajeGrasa") String porcentajeGrasa) {
-        return laboratorioService.getVariacionGrasa(quincena, codigoProveedor, porcentajeGrasa);
+    @GetMapping("/getVariacionGrasa/")
+    public ResponseEntity<Double> getVariacionGrasa(@RequestParam(value = "quincena") String quincena,
+                                                    @RequestParam(value = "codigoProveedor") String codigoProveedor,
+                                                    @RequestParam(value = "porcentajeGrasa") String porcentajeGrasa) {
+        double variacionGrasa = laboratorioService.getVariacionGrasa(quincena, codigoProveedor, porcentajeGrasa);
+        return ResponseEntity.ok(variacionGrasa);
     }
 
-    @GetMapping("/getVariacionSolidosTotales/{quincena}/{codigoProveedor}/{porcentajeSolidoTOtal}")
-    public double getVariacionSolidoTotal(@PathVariable(value = "quincena") String quincena, @PathVariable(value = "codigoProveedor") String codigoProveedor, @PathVariable(value = "porcentajeSolidoTOtal") String porcentajeSolidoTOtal) {
+    @GetMapping("/getVariacionSolidosTotales/")
+    public double getVariacionSolidoTotal(@RequestParam(value = "quincena") String quincena,
+                                          @RequestParam(value = "codigoProveedor") String codigoProveedor,
+                                          @RequestParam(value = "porcentajeSolidoTOtal") String porcentajeSolidoTOtal) {
         return laboratorioService.getVariacionSolidoTotal(quincena, codigoProveedor, porcentajeSolidoTOtal);
     }
 
@@ -58,6 +61,6 @@ public class LaboratorioController {
         laboratorioService.guardar(file);
         ms.addFlashAttribute("mensaje", "Se ha subido correctamente el archivo " + file.getOriginalFilename() + "!");
         laboratorioService.leerArchivo(file.getOriginalFilename(), quincena);
+        laboratorioService.borrarArchivo(file.getOriginalFilename());
     }
-
 }
